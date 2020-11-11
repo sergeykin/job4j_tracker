@@ -67,8 +67,7 @@ public class SqlTracker implements Store {
         try (PreparedStatement st = this.cn.prepareStatement("update items set name=(?) where id=(?);")) {
             st.setString(1, item.getName());
             st.setInt(2, id);
-            st.executeUpdate();
-            result = true;
+            result = st.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,7 +80,7 @@ public class SqlTracker implements Store {
         try (PreparedStatement st = this.cn.prepareStatement("delete from items where id=(?);")) {
             st.setInt(1, id);
             st.executeUpdate();
-            result = true;
+            result = st.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
