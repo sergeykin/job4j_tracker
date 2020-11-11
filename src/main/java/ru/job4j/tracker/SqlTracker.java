@@ -11,9 +11,16 @@ import java.util.Properties;
 public class SqlTracker implements Store {
     private Connection cn;
 
+    public SqlTracker(Connection connection) {
+        this.cn = connection;
+    }
+
+    public SqlTracker() {
+        init();
+    }
+
     public static void main(String[] args) {
         try (Store tracker = new SqlTracker()) {
-            tracker.init();
             tracker.add(new Item(7,"items7"));
             System.out.println(Arrays.toString(tracker.findAll().toArray()));
             System.out.println(tracker.findById(7).toString());
