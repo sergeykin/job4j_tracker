@@ -21,13 +21,14 @@ public class SqlTracker implements Store {
 
     public static void main(String[] args) {
         try (Store tracker = new SqlTracker()) {
-            tracker.add(new Item(7,"items7"));
+            int id = 100;
+            tracker.add(new Item("items7"));
             System.out.println(Arrays.toString(tracker.findAll().toArray()));
-            System.out.println(tracker.findById(7).toString());
+            System.out.println(tracker.findById(id).toString());
             System.out.println(tracker.findByName("items7").toString());
-            tracker.replace(7, new Item(123,"items7+changed"));
+            tracker.replace(id, new Item("items7+changed"));
             System.out.println(Arrays.toString(tracker.findAll().toArray()));
-            tracker.delete(7);
+            tracker.delete(id);
             System.out.println(Arrays.toString(tracker.findAll().toArray()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,7 +101,7 @@ public class SqlTracker implements Store {
         try (PreparedStatement st = this.cn.prepareStatement("select * from items;")) {
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
-                    result.add(new Item(rs.getInt("id"), rs.getString("name")));
+                    result.add(new Item(rs.getString("name")));
                 }
             }
         } catch (SQLException e) {
@@ -116,7 +117,7 @@ public class SqlTracker implements Store {
             st.setString(1, key);
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
-                    result.add(new Item(rs.getInt("id"), rs.getString("name")));
+                    result.add(new Item( rs.getString("name")));
                 }
             }
         } catch (SQLException e) {
@@ -132,7 +133,7 @@ public class SqlTracker implements Store {
             st.setInt(1, id);
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
-                    result = new Item(rs.getInt("id"), rs.getString("name"));
+                    result = new Item(rs.getString("name"));
                 }
             }
         } catch (SQLException e) {
