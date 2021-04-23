@@ -14,19 +14,21 @@ public class HibernateRun {
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure().build();
         try {
-            SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-            Item item = create(new Item("Learn Hibernate"), sf);
-            System.out.println(item);
-            item.setName("Learn Hibernate 5.");
-            update(item, sf);
-            System.out.println(item);
-            Item rsl = findById(item.getId(), sf);
-            System.out.println(rsl);
-            delete(rsl.getId(), sf);
-            List<Item> list = findAll(sf);
-            for (Item it : list) {
-                System.out.println(it);
+            try (SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory()) {
+                Item item = create(new Item("Learn Hibernate"), sf);
+                System.out.println(item);
+                item.setName("Learn Hibernate 5.");
+                update(item, sf);
+                System.out.println(item);
+                Item rsl = findById(item.getId(), sf);
+                System.out.println(rsl);
+                delete(rsl.getId(), sf);
+                List<Item> list = findAll(sf);
+                for (Item it : list) {
+                    System.out.println(it);
+                }
             }
+
         }  catch (Exception e) {
             e.printStackTrace();
         } finally {
