@@ -34,29 +34,33 @@ public class HbmTracker implements Store, AutoCloseable {
 
     @Override
     public boolean replace(Integer id, Item item) {
-        try (Session session = sf.openSession()) {
-            Item itemold = this.findById(id);
-            itemold.setName(item.getName());
-            itemold.setCreated(item.getCreated());
-            itemold.setDescription(item.getDescription());
-            session.beginTransaction();
-            session.update(itemold);
-            session.getTransaction().commit();
+        boolean result = false;
+        Item itemold = this.findById(id);
+        if (itemold != null) {
+            try (Session session = sf.openSession()) {
+                session.beginTransaction();
+                itemold.setName(item.getName());
+                itemold.setCreated(item.getCreated());
+                itemold.setDescription(item.getDescription());
+                session.update(itemold);
+                result = true;
+                session.getTransaction().commit();
+            }
         }
-        return true;
+        return result;
     }
 
     @Override
     public boolean delete(Integer id) {
-        boolean result  = false;
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            Item item = this.findById(id);
-            if (item != null) {
+        boolean result = false;
+        Item item = this.findById(id);
+        if (item != null) {
+            try (Session session = sf.openSession()) {
+                session.beginTransaction();
                 session.delete(item);
                 result = true;
+                session.getTransaction().commit();
             }
-            session.getTransaction().commit();
         }
         return result;
     }
@@ -117,6 +121,8 @@ public class HbmTracker implements Store, AutoCloseable {
         System.out.println(hbmTracker.findAll());
         hbmTracker.delete(item.getId());
         hbmTracker.delete(item2.getId());
+        System.out.println(hbmTracker.delete(333333333));
+
         hbmTracker.close();
     }
 }
