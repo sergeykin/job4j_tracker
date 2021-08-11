@@ -22,14 +22,16 @@ public class SqlTracker implements Store {
     public static void main(String[] args) {
         try (Store tracker = new SqlTracker()) {
             int id = 100;
-            tracker.add(new Item("items7"));
-            System.out.println(Arrays.toString(tracker.findAll().toArray()));
-            System.out.println(tracker.findById(id).toString());
-            System.out.println(tracker.findByName("items7").toString());
-            tracker.replace(id, new Item("items7+changed"));
-            System.out.println(Arrays.toString(tracker.findAll().toArray()));
-            tracker.delete(id);
-            System.out.println(Arrays.toString(tracker.findAll().toArray()));
+            //tracker.add(new Item("items7"));
+            //System.out.println(Arrays.toString(tracker.findAll().toArray()));
+            //System.out.println(tracker.findById(id).toString());
+            //System.out.println(tracker.findByName("items7").toString());
+            //tracker.replace(id, new Item("items7+changed"));
+            //System.out.println(Arrays.toString(tracker.findAll().toArray()));
+
+            tracker.findAllObserve(System.out::println);
+            //tracker.delete(id);
+            //System.out.println(Arrays.toString(tracker.findAll().toArray()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -109,6 +111,21 @@ public class SqlTracker implements Store {
         }
         return result;
     }
+
+    @Override
+    public void findAllObserve(Observe<Item> observe) {
+        try (PreparedStatement st = this.cn.prepareStatement("select * from items;")) {
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    observe.receive(new Item(rs.getString("name")));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     @Override
     public List<Item> findByName(String key) {

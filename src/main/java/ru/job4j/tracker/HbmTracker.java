@@ -125,4 +125,9 @@ public class HbmTracker implements Store, AutoCloseable {
 
         hbmTracker.close();
     }
+
+    @Override
+    public void findAllObserve(Observe<Item> observe) {
+
+    }
 }
